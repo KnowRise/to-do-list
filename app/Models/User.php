@@ -71,6 +71,6 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Task::class, 'user_tasks')
             ->using(UserTask::class)
-            ->withPivot('status', 'file_path');
+            ->withPivot('status', 'file_path', 'completed_at');
     }
 }

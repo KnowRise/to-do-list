@@ -92,8 +92,7 @@ class DatabaseSeeder extends Seeder
         Job::create([
             'title' => 'Sample Job',
             'description' => 'This is a sample job description.',
-            'status' => 'open',
-            'tasker_id' => $tasker->id,
+            'user_id' => $tasker->id,
         ]);
 
         // Schema::create('tasks', function (Blueprint $table) {
@@ -112,17 +111,19 @@ class DatabaseSeeder extends Seeder
         //     $table->index(['start_date', 'end_date', 'repeat_type']);
         // });
         $job = Job::first();
-        Task::create([
-            'title' => 'Sample Task',
-            'description' => 'This is a sample task description.',
-            'start_date' => now(),
-            'end_date' => now()->addDays(7),
-            'repeat_type' => 'none',
-            'repeat_interval' => 0,
-            'repeat_count' => 0,
-            'repeat_gap' => 0,
-            'job_id' => $job->id,
-        ]);
+        for ($i = 1; $i <= 5; $i++) {
+            Task::create([
+                'title' => 'Sample Task ' . $i,
+                'description' => 'This is a sample task description ' . $i,
+                'start_date' => now(),
+                'end_date' => now()->addDays(7),
+                'repeat_type' => 'none',
+                'repeat_interval' => 0,
+                'repeat_count' => 0,
+                'repeat_gap' => 0,
+                'job_id' => $job->id,
+            ]);
+        }
 
         // Schema::create('user_tasks', function (Blueprint $table) {
         //     $table->uuid('id')->primary();
@@ -133,13 +134,17 @@ class DatabaseSeeder extends Seeder
         //     $table->softDeletes();
         //     $table->timestamps();
         // });
-        $task = Task::first();
+        $tasks = Task::all();
         $worker = User::where('role', 'worker')->first();
-        UserTask::create([
-            'user_id' => $worker->id,
-            'task_id' => $task->id,
-            'status' => 'pending',
-            'file_path' => null,
-        ]);
+        echo $tasks[0]->id;
+        for ($i = 1; $i <= 5; $i++) {
+            $index = $i - 1;
+            UserTask::create([
+                'user_id' => $worker->id,
+                'task_id' => $tasks[$index]->id,
+                'status' => 'pending',
+                'file_path' => null,
+            ]);
+        }
     }
 }

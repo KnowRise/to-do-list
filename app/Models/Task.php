@@ -17,9 +17,15 @@ class Task extends Model
         'end_date',
         'repeat_type',
         'repeat_interval',
-        'repeat_gap',
         'repeat_count',
+        'repeat_gap',
+        'deadline',
         'job_id',
+    ];
+
+    protected $with = [
+        'job',
+        'users',
     ];
 
     protected $casts = [
@@ -29,14 +35,20 @@ class Task extends Model
         'job_id' => 'string',
     ];
 
-    public function job()   
+    public function job()
     {
         return $this->belongsTo(Job::class);
+    }
+
+    public function user($id)
+    {
+        return $this->users->where('id', $id)->first();
     }
 
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_tasks')
             ->using(UserTask::class)
-            ->withPivot('status', 'file_path');    }
+            ->withPivot('status', 'file_path', 'completed_at');
+    }
 }

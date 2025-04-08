@@ -15,8 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', ['open', 'closed'])->default('open');
-            $table->foreignUuid('tasker_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

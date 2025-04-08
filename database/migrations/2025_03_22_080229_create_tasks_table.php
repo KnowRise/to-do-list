@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedInteger('repeat_interval')->default(1);
             $table->unsignedInteger('repeat_count')->default(0);
             $table->unsignedInteger('repeat_gap')->default(1);
+            $table->timestamp('deadline')->nullable();
             $table->foreignUuid('job_id')->constrained('jobs')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();

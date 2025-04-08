@@ -13,18 +13,17 @@ class Job extends Model
     protected $fillable = [
         'title',
         'description',
-        'status',
-        'tasker_id',
+        'user_id',
     ];
 
     protected $casts = [
         'id' => 'string',
-        'tasker_id' => 'string',
+        'user_id' => 'string',
     ];
 
     public function tasker()
     {
-        return $this->belongsTo(User::class, 'tasker_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function tasks()
