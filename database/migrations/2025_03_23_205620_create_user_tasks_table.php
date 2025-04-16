@@ -15,7 +15,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
             $table->foreignUuid('task_id')->constrained()->cascadeOnDelete();
-            $table->enum('status', ['pending', 'completed'])->default('pending');
+            $table->text('comment')->nullable();
+            $table->enum('status', ['pending', 'completed', 'approved', 'rejected'])->default('pending');
             $table->timestamp('completed_at')->nullable();
             $table->string('file_path')->nullable();
             $table->softDeletes();

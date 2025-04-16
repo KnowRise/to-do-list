@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\User;
 use App\Models\UserTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class JobController extends Controller
 {
@@ -15,25 +16,24 @@ class JobController extends Controller
     {
         $user = $request->user();
         $job = Job::find($id);
+        $job->image = $job->image != null ? asset(Storage::url($job->image)) : null;
+        $job->video = $job->video != null ? asset(Storage::url($job->video)) : null;
 
         if ($user->role == 'worker') {
             $tasks = Task::where('job_id', $id)
-                ->whereHas('users', function ($query) use ($user) {
+                ->whereHas('userTasks', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
-                })
-                ->get();
-            $tasks = $tasks->map(function ($task) use ($user) {
-                return [
-                    'task' => $task,
-                    'user_task' => $task->user($user->id),
-                ];
-            });
+                })->get();
         } else {
             $tasks = Task::where('job_id', $id)->get();
+            // dd($tasks);
         }
 
-        $isJob = true;
-        $isTask = false;
-        return view('pages.jobs.detail', compact('job', 'tasks', 'isJob', 'isTask'));
+        $type = 'job';
+        return view('pages.detail.jobs.main', compact('job', 'tasks', 'type'));
+    }
+
+    public function search() {
+        //
     }
 }

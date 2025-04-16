@@ -15,7 +15,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
         $admin = $request->input('login');
@@ -28,7 +28,7 @@ class AuthController extends Controller
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
             if ($user->role == 'admin' && !$admin) {
-                return redirect()->back()->withErrors(['login' => 'Invalid credentials'])->withInput();
+                return redirect()->back()->withErrors(['error' => 'Invalid credentials'])->withInput();
             }
 
             return redirect()->route('dashboard')->with(['success' => 'Successfully Login']);

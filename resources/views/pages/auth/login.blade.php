@@ -19,7 +19,7 @@
         <div class="flex w-full items-center justify-center md:w-2/3 p-[64px] md:p-0 min-h-screen md:min-h-0">
             <div class="w-full md:w-1/2 text-[#1d1d1d] flex flex-col gap-4">
                 <h1 class="text-center text-[32px] font-extrabold">Login</h1>
-                <form class="flex flex-col text-[20px]" action="{{ route('backend.login') }}" method="POST">
+                <form class="flex flex-col text-[20px]" action="{{ route('login') }}" method="POST">
                     @csrf
                     <label for="login">Username/Email:</label>
                     <input class="mb-4 border-2 p-2" type="text" name="login" placeholder="Enter Username or Email" required

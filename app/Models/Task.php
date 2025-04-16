@@ -13,25 +13,16 @@ class Task extends Model
     protected $fillable = [
         'title',
         'description',
-        'start_date',
-        'end_date',
-        'repeat_type',
-        'repeat_interval',
-        'repeat_count',
-        'repeat_gap',
         'deadline',
         'job_id',
     ];
 
     protected $with = [
         'job',
-        'users',
     ];
 
     protected $casts = [
         'id' => 'string',
-        'start_date' => 'datetime',
-        'end_date' => 'datetime',
         'job_id' => 'string',
     ];
 
@@ -40,15 +31,13 @@ class Task extends Model
         return $this->belongsTo(Job::class);
     }
 
-    public function user($id)
+    public function userTaskFor($id)
     {
-        return $this->users->where('id', $id)->first();
+        return $this->userTasks()->where('user_id', $id)->first();
     }
 
-    public function users()
+    public function userTasks()
     {
-        return $this->belongsToMany(User::class, 'user_tasks')
-            ->using(UserTask::class)
-            ->withPivot('status', 'file_path', 'completed_at');
+        return $this->hasMany(UserTask::class, 'task_id');
     }
 }

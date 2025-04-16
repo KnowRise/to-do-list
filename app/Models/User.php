@@ -67,10 +67,8 @@ class User extends Authenticatable
         return $this->hasMany(Job::class, 'tasker_id');
     }
 
-    public function tasks()
+    public function userTasks()
     {
-        return $this->belongsToMany(Task::class, 'user_tasks')
-            ->using(UserTask::class)
-            ->withPivot('status', 'file_path', 'completed_at');
+        return $this->hasMany(UserTask::class, 'user_id');
     }
 }

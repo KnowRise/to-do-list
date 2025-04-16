@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div class="bg-[#eeeeee] min-h-screen">
+    <div class="bg-[#eeeeee] min-h-screen transition-all duration-500">
         @yield('content')
     </div>
 </body>

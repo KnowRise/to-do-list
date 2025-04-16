@@ -13,10 +13,10 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         if ($user->role == 'admin') {
-            $users = User::all();
-            return view('pages.dashboard', compact('jobs', 'users'));
+            $users = User::where('id', '!=', $user->id)->get();
+            return view('pages.dashboard', compact('users'));
         } else if ($user->role == 'worker') {
-            $jobs = Job::whereHas('tasks.users', function ($query) use ($user) {
+            $jobs = Job::whereHas('tasks.userTasks', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })->orWhere('user_id', $user->id)->get();
         } else if ($user->role == 'tasker') {

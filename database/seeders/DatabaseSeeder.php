@@ -23,25 +23,6 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        // Schema::create('users', function (Blueprint $table) {
-        // $table->uuid('id')->primary();
-        // $table->string('name');
-        // $table->string('email')->unique();
-        // $table->string('username')->unique();
-        // $table->enum('role', ['worker', 'tasker', 'admin'])->default('worker');
-        // $table->string('phone_number')->unique();
-        // $table->timestamp('email_verified_at')->nullable();
-        // $table->timestamp('phone_verified_at')->nullable();
-        // $table->string('email_verification_code')->nullable();
-        // $table->string('phone_verification_code')->nullable();
-        // $table->timestamp('email_verification_code_expiry')->nullable();
-        // $table->timestamp('phone_verification_code_expiry')->nullable();
-        // $table->string('profile')->nullable();
-        // $table->string('password');
-        // $table->softDeletes();
-        // $table->rememberToken();
-        // $table->timestamps();
-        // });
         $defaultProfile = 'profiles/default.png';
         User::create([
             'name' => env('ADMIN_NAME'),
@@ -55,96 +36,101 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt(env('ADMIN_PASSWORD'))
         ]);
 
-        User::create([
-            'name' => 'Worker',
-            'email' => 'worker@example.com',
-            'username' => 'worker',
-            'role' => 'worker',
-            'phone_number' => '12345678901',
-            'email_verified_at' => now(),
-            'phone_verified_at' => now(),
-            'profile' => $defaultProfile,
-            'password' => bcrypt('password123')
-        ]);
+        for ($i = 1; $i <= 20; $i++) {
+            User::create([
+                'name' => 'Worker' . $i,
+                'email' => 'worker' . $i . '@example.com',
+                'username' => 'worker' . $i,
+                'role' => 'worker',
+                'phone_number' => '12345678901' . $i,
+                'email_verified_at' => now(),
+                'phone_verified_at' => now(),
+                'profile' => $defaultProfile,
+                'password' => bcrypt('password123')
+            ]);
+        }
 
         User::create([
             'name' => 'Tasker',
             'email' => 'tasker@example.com',
             'username' => 'tasker',
             'role' => 'tasker',
-            'phone_number' => '12345678902',
+            'phone_number' => '45678743456789',
             'email_verified_at' => now(),
             'phone_verified_at' => now(),
             'profile' => $defaultProfile,
             'password' => bcrypt('password123')
         ]);
 
-        // Schema::create('jobs', function (Blueprint $table) {
-        //     $table->uuid('id')->primary();
-        //     $table->string('title');
-        //     $table->text('description')->nullable();
-        //     $table->enum('status', ['open', 'closed'])->default('open');
-        //     $table->foreignUuid('tasker_id')->constrained('users')->cascadeOnDelete();
-        //     $table->softDeletes();
-        //     $table->timestamps();
-        // });
         $tasker = User::where('role', 'tasker')->first();
         Job::create([
             'title' => 'Sample Job',
             'description' => 'This is a sample job description.',
             'user_id' => $tasker->id,
+            'image' => 'image.png',
+            'video' => 'video.mp4',
         ]);
 
-        // Schema::create('tasks', function (Blueprint $table) {
-        //     $table->uuid('id')->primary();
-        //     $table->string('title');
-        //     $table->text('description')->nullable();
-        //     $table->timestamp('start_date');
-        //     $table->timestamp('end_date')->nullable();
-        //     $table->enum('repeat_type', ['none', 'daily', 'weekly', 'monthly'])->default('none');
-        //     $table->unsignedInteger('repeat_interval')->default(1);
-        //     $table->unsignedInteger('repeat_count')->default(0);
-        //     $table->unsignedInteger('repeat_gap')->default(1);
-        //     $table->foreignUuid('job_id')->constrained('jobs')->cascadeOnDelete();
-        //     $table->softDeletes();
-        //     $table->timestamps();
-        //     $table->index(['start_date', 'end_date', 'repeat_type']);
-        // });
         $job = Job::first();
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 20; $i++) {
             Task::create([
                 'title' => 'Sample Task ' . $i,
                 'description' => 'This is a sample task description ' . $i,
-                'start_date' => now(),
-                'end_date' => now()->addDays(7),
-                'repeat_type' => 'none',
-                'repeat_interval' => 0,
-                'repeat_count' => 0,
-                'repeat_gap' => 0,
                 'job_id' => $job->id,
             ]);
         }
 
-        // Schema::create('user_tasks', function (Blueprint $table) {
-        //     $table->uuid('id')->primary();
-        //     $table->foreignUuid('user_id')->constrained()->cascadeOnDelete();
-        //     $table->foreignUuid('task_id')->constrained()->cascadeOnDelete();
-        //     $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
-        //     $table->string('file_path')->nullable();
-        //     $table->softDeletes();
-        //     $table->timestamps();
-        // });
         $tasks = Task::all();
-        $worker = User::where('role', 'worker')->first();
-        echo $tasks[0]->id;
-        for ($i = 1; $i <= 5; $i++) {
-            $index = $i - 1;
+        $workers = User::where('role', 'worker')->limit(3)->get();
+        // foreach ($workers as $worker) {
+        // }
+        // foreach ($tasks as $task) {
+        //     UserTask::create([
+        //         'user_id' => $worker->id,
+        //         'task_id' => $task->id,
+        //         'status' => 'pending',
+        //         'file_path' => null,
+        //     ]);
+        // }
+
+        for ($i = 1; $i <= 20; $i++) {
             UserTask::create([
-                'user_id' => $worker->id,
-                'task_id' => $tasks[$index]->id,
+                'user_id' => $workers[rand(0,2)]->id,
+                'task_id' => $tasks[rand(0,19)]->id,
                 'status' => 'pending',
-                'file_path' => null,
             ]);
         }
+
+        // worker id = 1
+        // worker id = 1
+        // task id = 1
+
+        // worker id = 1
+        // task id = 2
+
+        // worker id = 1
+        // task id = 20
+
+        // worker id = 2
+        // worker id = 2
+        // task id = 1
+
+        // worker id = 2
+        // task id = 2
+
+        // worker id = 2
+        // task id = 20
+
+        // worker id = 3
+        // worker id = 3
+        // task id = 1
+
+        // worker id = 3
+        // task id = 2
+
+        // worker id = 3
+        // task id = 20
+
+        // DONW!!!
     }
 }

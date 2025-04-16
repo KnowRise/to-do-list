@@ -11,10 +11,8 @@ class TaskController extends Controller
     public function detail(Request $request, $id)
     {
         $user = $request->user();
-        $tasks = Task::with(['job', 'users'])->find($id);
+        $task = Task::with(['job', 'userTasks'])->find($id);
 
-        $isJob = true;
-        $isTask = false;
-        return view('pages.jobs.detail', compact('tasks', 'isJob', 'isTask'));
+        return view('pages.detail.tasks.main', compact('task'));
     }
 }

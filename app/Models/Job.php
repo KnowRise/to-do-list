@@ -13,6 +13,8 @@ class Job extends Model
     protected $fillable = [
         'title',
         'description',
+        'image',
+        'video',
         'user_id',
     ];
 
@@ -21,7 +23,7 @@ class Job extends Model
         'user_id' => 'string',
     ];
 
-    public function tasker()
+    public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }

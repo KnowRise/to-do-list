@@ -1,32 +1,25 @@
-<div class="flex w-full">
-    <div class="hidden md:grid grid-cols-3 w-full p-[25px] text-[#1D1D1D]">
-        <h1 class="text-[32px] font-extrabold">TaskFlow</h1>
-        <div class="flex justify-center items-center text-center">
-            <div
-                class="border-2 border-[#1D1D1D] rounded-full h-[50px] w-1/2 flex items-center justify-center p-[10px]">
-                <p class="text-[24px]">Search</p>
+<div class="flex justify-between items-center p-4 border-b border-gray-300 bg-white">
+    <a href="{{ route('dashboard') }}" class="text-3xl font-extrabold cursor-pointer">TaskFlow</a>
+    <div class="relative flex items-center gap-4">
+        <p class="text-xl font-medium">{{ auth()->user()->username }}</p>
+        <button id="btn">
+            <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-gray-300">
+                <img src="{{ asset(Storage::url(auth()->user()->profile)) }}" alt="Profile Picture" class="w-full h-full object-cover">
             </div>
-        </div>
-        <div class="flex items-center gap-[25px] justify-end relative">
-            <div id="dropdown"
-                class="absolute right-[75px] border-2 bg-[#eeeeee] flex-col text-center rounded-[8px] w-[100px] gap-[4px] hidden">
-                <a href="" class="hover:bg-[#211C84] hover:text-[#eeeeee]">Profile</a>
-                <a href="" class="hover:bg-[#211C84] hover:text-[#eeeeee]">Password</a>
-                <button id="btn-logout" class="hover:bg-[#C80036] hover:text-[#eeeeee] w-full">Logout</button>
-            </div>
-            <p class="text-[24px]">{{ auth()->user()->username }}</p>
-            <button id="btn">
-                <div class="w-[50px] h-[50px] rounded-full">
-                    <img src="{{ asset(auth()->user()->profile) }}" alt="Profile Picture"
-                        class="w-full h-full rounded-full">
-                </div>
-            </button>
+        </button>
+
+        <!-- Dropdown -->
+        <div id="dropdown"
+            class="absolute top-[60px] right-0 hidden flex-col bg-white border border-gray-300 rounded-md shadow-lg min-w-[140px] text-sm text-gray-800">
+            <a href="#" class="px-4 py-2 hover:bg-[#211C84] hover:text-white rounded-t-md transition">Profile</a>
+            <a href="#" class="px-4 py-2 hover:bg-[#211C84] hover:text-white transition">Password</a>
+            <button id="btn-logout"
+                class="w-full text-left px-4 py-2 hover:bg-[#C80036] hover:text-white rounded-b-md transition">Logout</button>
         </div>
     </div>
 </div>
-<div id="modal-logout" class="absolute inset-0 items-center justify-center hidden">
-    <div
-        class="flex p-[24px] flex-col justify-center items-center w-[50vh] h-[40vh] border-2 bg-[#eeeeee] rounded-[16px] gap-[24px]">
+<div id="modal-logout" class="absolute inset-0 bg-[rgba(238,238,238,0.5)] backdrop-blur-[10px] hidden justify-center items-center">
+    <div class="bg-white shadow-lg rounded-[16px] p-[32px] border max-w-[75vh] max-h-[60vh] overflow-hidden">
         <div class="flex flex-col text-center gap-[24px]">
             <h1 class="font-extrabold text-[32px]">Logout</h1>
             <p class="text-[16px]">Are you sure?</p>
@@ -76,7 +69,7 @@
     });
 
     btnConfirmModalLogout.addEventListener("click", function () {
-        fetch("{{ route('backend.logout') }}", {
+        fetch("{{ route('logout') }}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
