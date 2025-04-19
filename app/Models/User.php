@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasUuids, SoftDeletes;
+    use HasFactory, Notifiable, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -21,16 +21,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
         'password',
         'username',
         'role',
         'phone_number',
-        'email_verified_at',
         'phone_verified_at',
-        'email_verification_code',
         'phone_verification_code',
-        'email_verification_code_expiry',
         'phone_verification_code_expiry',
         'profile',
     ];
@@ -54,9 +50,7 @@ class User extends Authenticatable
     {
         return [
             'id' => 'string',
-            'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
-            'email_verification_code_expiry' => 'datetime',
             'phone_verification_code_expiry' => 'datetime',
             'password' => 'hashed',
         ];
@@ -64,7 +58,7 @@ class User extends Authenticatable
 
     public function jobs()
     {
-        return $this->hasMany(Job::class, 'tasker_id');
+        return $this->hasMany(Job::class, 'user_id');
     }
 
     public function userTasks()

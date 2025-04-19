@@ -26,11 +26,9 @@ class DatabaseSeeder extends Seeder
         $defaultProfile = 'profiles/default.png';
         User::create([
             'name' => env('ADMIN_NAME'),
-            'email' => env('ADMIN_EMAIL'),
             'username' => env('ADMIN_USERNAME'),
             'role' => env('ADMIN_ROLE'),
             'phone_number' => env('ADMIN_PHONE_NUMBER'),
-            'email_verified_at' => now(),
             'phone_verified_at' => now(),
             'profile' => $defaultProfile,
             'password' => bcrypt(env('ADMIN_PASSWORD'))
@@ -39,11 +37,9 @@ class DatabaseSeeder extends Seeder
         for ($i = 1; $i <= 20; $i++) {
             User::create([
                 'name' => 'Worker' . $i,
-                'email' => 'worker' . $i . '@example.com',
                 'username' => 'worker' . $i,
                 'role' => 'worker',
                 'phone_number' => '12345678901' . $i,
-                'email_verified_at' => now(),
                 'phone_verified_at' => now(),
                 'profile' => $defaultProfile,
                 'password' => bcrypt('password123')
@@ -52,11 +48,9 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name' => 'Tasker',
-            'email' => 'tasker@example.com',
             'username' => 'tasker',
             'role' => 'tasker',
             'phone_number' => '45678743456789',
-            'email_verified_at' => now(),
             'phone_verified_at' => now(),
             'profile' => $defaultProfile,
             'password' => bcrypt('password123')

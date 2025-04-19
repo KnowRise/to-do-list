@@ -10,7 +10,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validator = validator($request->all(), [
-            'login' => 'required',
+            'username' => 'required',
             'password' => 'required',
         ]);
 
@@ -18,16 +18,16 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator->errors())->withInput();
         }
 
-        $admin = $request->input('login');
-        $isEmail = filter_var($request->login, FILTER_VALIDATE_EMAIL);
+        $admin = $request->input('admin');
         $credentials = [
-            $isEmail ? 'email' : 'username' => $request->login,
+            'username' => $request->username,
             'password' => $request->password,
         ];
 
         if (auth()->attempt($credentials)) {
             $user = auth()->user();
             if ($user->role == 'admin' && !$admin) {
+                auth()->logout();
                 return redirect()->back()->withErrors(['error' => 'Invalid credentials'])->withInput();
             }
 

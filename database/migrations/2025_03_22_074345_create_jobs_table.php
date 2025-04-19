@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->string('video')->nullable();
             $table->foreignUuid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->softDeletes();
             $table->timestamps();
         });
     }

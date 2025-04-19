@@ -1,25 +1,25 @@
-<div id="modal-new-user" class="absolute inset-0 bg-[rgba(238,238,238,0.5)] backdrop-blur-[10px] hidden justify-center items-center">
+<div id="modal-new-user" class="absolute inset-0 bg-[rgba(238,238,238,0.5)] backdrop-blur-[10px] hidden justify-center items-center z-1">
     <div class="bg-white shadow-lg rounded-[16px] p-[32px] border max-w-[75vh] max-h-[60vh] overflow-hidden">
         <div class="flex justify-end">
             <button type="button" class="btn-new-user text-[32px] font-extrabold">X</button>
         </div>
-        <h1 class="text-[32px] font-extrabold text-center">Add New User</h1>
-        <div class="flex gap-[16px] overflow-hidden">
-            <form action="{{ route('tasks.users.store', ['id' => $task->id]) }}" method="POST" class="flex flex-col gap-[16px] overflow-hidden">
+        <h1 class="text-[32px] font-extrabold text-center p-[16px]">Add New User</h1>
+        <div class="flex gap-[16px] max-h-[60vh] overflow-hidden">
+            <form action="{{ route('tasks.users.store', ['id' => $task->id]) }}" method="POST" class="flex flex-col gap-[16px] overflow-hidden max-h-[40vh]">
                 @csrf
                 <div class="flex gap-[16px]">
                     <button type="submit" class="border py-[8px] px-[16px] rounded-[8px] text-[20px]">Submit</button>
-                    <button type="button" class="btn-choose-another-task border py-[8px] px-[16px] rounded-[8px] text-[20px]">Copy from Another
+                    <button type="button" data-user-id="{{ auth()->user()->id }}" class="btn-modal-choose-another-task border py-[8px] px-[16px] rounded-[8px] text-[20px]">Copy from Another
                         Task</button>
                 </div>
                 <input type="text" id="search" placeholder="Search"
                     class="border-2 py-[8px] px-[16px] rounded-[8px] text-[20px]">
-                <div class="flex flex-col overflow-auto gap-[16px] border p-[16px] h-full" id="list-users">
+                <div class="flex flex-col overflow-auto gap-[16px] border p-[16px] max-h-full" id="list-users">
                 </div>
             </form>
-            <div class="flex flex-col rounded-[8px] border overflow-hidden px-[16px] py-[8px] gap-[16px] max-h-full">
-                <h1 class="text-[20px]">Assigned User</h1>
-                <div class="flex flex-col overflow-auto gap-[16px]" id="list-selected-users">
+            <div class="flex flex-col rounded-[8px] border overflow-hidden px-[16px] py-[8px] gap-[16px] max-h-[40vh]">
+                <h1 class="text-[20px] border-b">Assigned User</h1>
+                <div class="flex flex-col overflow-auto gap-[16px] max-h-full" id="list-selected-users">
                 </div>
             </div>
         </div>

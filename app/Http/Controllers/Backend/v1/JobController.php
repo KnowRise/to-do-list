@@ -13,7 +13,7 @@ class JobController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'image_null' => ['nullable', 'in:true'],
             'video_null' => ['nullable', 'in:true'],
             'image' => ['nullable', 'mimes:jpeg,png,jpg,svg'],

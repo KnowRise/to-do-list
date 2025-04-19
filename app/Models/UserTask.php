@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 
 class UserTask extends Model
 {
-    use HasUuids, SoftDeletes;
+    use HasUuids;
 
     public $timestamps = true;
     protected $fillable = [

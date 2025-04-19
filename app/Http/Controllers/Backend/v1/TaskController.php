@@ -29,9 +29,7 @@ class TaskController extends Controller
             ->get();
         foreach ($userTasks as $userTask) {
             $file = $files[$userTask->task_id];
-            $filePath = '/tasks/' . $userTask->task_id . '/users/' . $user->id;
-            $fileName = $file->hashName() . '.' . $file->getClientOriginalName();
-            $file->storeAs($filePath, $fileName);
+            $filePath = $file->store('tasks/' . $userTask->task->title . '/' . $userTask->task_id . '/users/' . $user->id);
             $userTask->file_path = $filePath;
             $userTask->status = 'completed';
             $userTask->completed_at = now();
@@ -54,6 +52,7 @@ class TaskController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
+        $user = $request->user();
         $data = $request->only('title', 'description');
         if ($id) {
             $task = Task::find($id);
@@ -74,6 +73,12 @@ class TaskController extends Controller
             $data
         );
 
+        if ($user->role == 'worker') {
+            UserTask::updateOrCreate(
+                ['task_id' => $task->id, 'user_id' => $user->id],
+                ['status' => 'pending']
+            );
+        }
 
         if ($id) {
             $message = 'Task Updated Successfully';
@@ -155,7 +160,7 @@ class TaskController extends Controller
             //         'user_id' => $userId,
             //     ]);
             // }
-
+            ;
             return redirect()->back()->with(['message' => 'User Task Assigned Successfully']);
         }
 
@@ -178,26 +183,64 @@ class TaskController extends Controller
         $userIds = $request->input('user_ids');
         $exitingUserTasks = UserTask::where('task_id', $id)->pluck('user_id')->toArray();
         $newUserIds = array_diff($userIds, $exitingUserTasks);
+        $message = 'The user already assigned to this task';
 
-        foreach ($newUserIds as $userId) {
-            UserTask::create([
-                'task_id' => $id,
-                'user_id' => $userId,
-            ]);
+        if (count($newUserIds) > 0) {
+            $message = 'User Task Assigned Successfully';
+            foreach ($newUserIds as $userId) {
+                UserTask::create([
+                    'task_id' => $id,
+                    'user_id' => $userId,
+                ]);
+            }
+        }
+        return redirect()->back()->with(['message' => $message]);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => ['required', 'in:approved,rejected'],
+            'comment' => ['nullable', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        return redirect()->back()->with(['message' => 'User Task Created Successfully']);
+        $userTask = UserTask::find($id);
+        if (!$userTask) {
+            return redirect()->back()->withErrors(['error' => 'User Task not found.']);
+        }
+        if ($userTask->task->job->user_id != $request->user()->id) {
+            return redirect()->back()->withErrors(['error' => 'You are not authorized to update this userTask.']);
+        }
+
+        $userTask->status = $request->input('status');
+        $userTask->comment = $request->input('comment');
+        $userTask->save();
+
+        return redirect()->back()->with(['message' => 'Task status updated successfully.']);
     }
 
     // DATA
     public function tasks(Request $request)
     {
         $search = $request->input('search');
-        $tasks = Task::when($search, function ($query, $search) {
-            return $query->where('title', 'like', "%{$search}%");
-        }, function ($query) {
-            return $query->limit(10); // Ambil 10 pertama kalau ga ada pencarian
-        })->get();
+        $userId = $request->input('user_id');
+        $tasks = Task::query();
+        $tasks->whereHas('job', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        });
+        if ($search) {
+            $tasks->where('title', 'like', "%{$search}%");
+        }
+        $tasks = $tasks->get();
+        // $tasks = Task::when($search, function ($query, $search) {
+        //     return $query->where('title', 'like', "%{$search}%");
+        // }, function ($query) {
+        //     return $query->latest()->limit(10); // Ambil 10 pertama kalau ga ada pencarian
+        // })->get();
 
         return $tasks;
     }

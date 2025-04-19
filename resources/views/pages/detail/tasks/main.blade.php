@@ -3,11 +3,11 @@
 
 @section('content')
     @if (Session::has('message') || $errors->any())
-        @include('templates.modal-message')
+        @include('templates.modalMessage')
     @endif
     <div class="flex flex-col h-screen overflow-hidden">
         <div class="flex-none">
-            @include('templates.navbar')
+            @include('templates.navbar.main')
         </div>
 
         <div class="flex-grow p-[56px] overflow-hidden">
@@ -16,11 +16,13 @@
                     <div id="task-list">
                         <div class="flex justify-between w-full h-fit p-[8px] border-b-2">
                             <div class="flex">
-                                <button type="button" class="btn-new-user py-[4px] px-[32px] border-2 rounded-[8px]">New User</button>
+                                <button type="button" class="btn-new-user py-[4px] px-[32px] border-2 rounded-[8px] cursor-pointer">
+                                    Assign Worker</button>
                             </div>
                         </div>
 
                         {{-- Dummy Tasks --}}
+
                         @foreach ($task->userTasks as $userTask)
                             {{-- @dd($userTask) --}}
                             <div class="flex w-full h-fit border-b-2">
@@ -30,17 +32,20 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center w-fit border-l-2 p-[8px] gap-[8px]">
-                                    <button type="button" class="btn-detail-user-task" data-username="{{ $userTask->user->username }}" data-status="{{ $userTask->status }}" data-file="{{ $userTask->file_url }}" data-comment="{{ $userTask->comment  }}">
-                                        <img src="{{ asset('icons/info.svg') }}" alt="Detail" width="30px" height="30px"
-                                            onclick="showDetailUserTask({{ $userTask->id }})">
+                                    <button type="button" class="btn-detail-user-task" data-id="{{ $userTask->id }}"
+                                        data-username="{{ $userTask->user->username }}" data-status="{{ $userTask->status }}"
+                                        data-file="{{ $userTask->file_url }}" data-comment="{{ $userTask->comment  }}"
+                                        data-completed-at="{{ $userTask->completed_at }}">
+                                        <img src="{{ asset('icons/info.svg') }}" alt="Detail" width="30px" height="30px">
                                     </button>
-                                    <form action="{{ route('tasks.users.delete', ['id' => $userTask->id]) }}" method="post"
+                                    <form id="form-delete-user-task"
+                                        action="{{ route('tasks.users.delete', ['id' => $userTask->id]) }}" method="post"
                                         class="flex items-center">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit">
-                                            <img src="{{ asset('icons/delete_red.svg') }}" width="30px" height="30px" alt=""
-                                                onclick="return confirm('Are you sure?')">
+                                        <button type="button" class="btn-modal-confirm" data-title="Delete User Task"
+                                            data-message="This action will delete the user task" data-action="deleteUserTask">
+                                            <img src="{{ asset('icons/delete_red.svg') }}" width="30px" height="30px" alt="">
                                         </button>
                                     </form>
                                 </div>
@@ -55,14 +60,17 @@
                                 <img src="{{ asset('icons/arrow_back.svg') }}" alt="" width="30px" height="30px">
                             </a>
                             <div class="flex gap-[16px]">
-                                <button type="button" id="btn-edit-task">
+                                <button type="button" id="btn-edit-task" class="cursor-pointer">
                                     <img src="{{ asset('icons/edit.svg') }}" alt="" width="30px" height="30px">
                                 </button>
-                                <form action="{{ route('tasks.delete', ['id' => $task->id]) }}" method="POST"
-                                    class="flex items-center">
+                                <form id="form-delete-task" action="{{ route('tasks.delete', ['id' => $task->id]) }}"
+                                    method="POST" class="flex items-center">
                                     @csrf
                                     @method('DELETE')
-                                    <button id="btn-delete-task" type="submit" onclick="return confirm('Are you sure?')">
+                                    <button id="btn-delete-task" type="button" class="btn-modal-confirm cursor-pointer"
+                                        data-title="Delete Task"
+                                        data-message="This action will delete the task and all its users"
+                                        data-action="deleteTask">
                                         <img src="{{ asset('icons/delete_red.svg') }}" alt="" width="30px" height="30px">
                                     </button>
                                 </form>
@@ -75,17 +83,18 @@
                             <div class="flex flex-col flex-grow gap-[16px]">
                                 <input type="text" name="title" placeholder="Title"
                                     class="py-[4px] px-[8px] border-2 rounded-[8px] text-center font-extrabold text-[32px]"
-                                    required>
-                                <input type="text" name="description" placeholder="Description"
-                                    class="py-[4px] px-[8px] border-2 rounded-[8px] text-center text-[16px]" required>
+                                    required value="{{ $task->title }}">
+                                <textarea rows="5" type="text" name="description"
+                                    class="py-[4px] px-[8px] border-2 rounded-[8px] text-[16px]" placeholder="Description"
+                                    required>{{ $task->description }}</textarea>
                                 <input type="text" name="job_id" value="{{ $task->job_id }}" class="hidden">
                             </div>
                             <div class="flex flex-col w-fit gap-[16px]">
-                                <button type="submit" class="w-[50px] h-[50px] rounded-full">
-                                    <img src="{{ asset('icons/check.svg') }}" alt="">
+                                <button type="submit" class="w-[50px] h-[50px] rounded-full cursor-pointer">
+                                    <img src="{{ asset('icons/check.svg') }}" alt="" class="cursor-pointer">
                                 </button>
-                                <button id="btn-cancel-edit-task" type="button" class="w-[50px] h-[50px] rounded-full">
-                                    <img src="{{ asset('icons/cancel.svg') }}" alt="">
+                                <button id="btn-cancel-edit-task" type="button" class="w-[50px] h-[50px] rounded-full cursor-pointer">
+                                    <img src="{{ asset('icons/cancel.svg') }}" alt="" class="cursor-pointer">
                                 </button>
                             </div>
                         </form>

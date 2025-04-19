@@ -9,9 +9,10 @@ class AuthController extends Controller
 {
     public function login()
     {
+        $admin = request()->has('admin');
         if (auth()->check()) {
             return redirect()->route('dashboard');
         }
-        return view('pages.auth.login');
+        return view('pages.auth.login', compact('admin'));
     }
 }

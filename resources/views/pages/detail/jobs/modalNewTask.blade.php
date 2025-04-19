@@ -1,19 +1,19 @@
-<div id="modal-new-task" class="absolute inset-0 bg-[rgba(238,238,238,0.5)] backdrop-blur-[10px] hidden justify-center items-center">
+<div id="modal-new-task" class="absolute inset-0 bg-[rgba(238,238,238,0.5)] backdrop-blur-[10px] hidden justify-center items-center z-1">
     <div class="bg-white shadow-lg rounded-[16px] p-[32px] border max-w-[75vh] max-h-[60vh] overflow-hidden">
         <div class="flex justify-end">
             <button type="button" class="btn-new-task text-[32px] font-extrabold px-[4px]">X</button>
         </div>
         <div class="flex flex-col gap-[24px] p-[16px]">
             <h1 class="text-center text-[32px] font-extrabold">New Task</h1>
-            <form action="{{ route('tasks.store') }}" class="flex flex-col gap-[16px]" method="POST">
+            <form action="{{ route('tasks.store') }}" class="flex flex-col gap-[16px] min-w-[30vh]" method="POST">
                 @csrf
                 <div class="flex flex-col">
                     <label for="" class="text-[24px]">Title:</label>
-                    <input type="text" class="border-2 py-[4px] px-[8px] rounded-[8px]" name="title" required>
+                    <input type="text" class="border-2 py-[4px] px-[8px] rounded-[8px]" name="title" placeholder="Title" required>
                 </div>
                 <div class="flex flex-col">
                     <label for="" class="text-[24px]">Description:</label>
-                    <input type="text" class="border-2 py-[4px] px-[8px] rounded-[8px]" name="description">
+                    <textarea type="text" class="border-2 py-[4px] px-[8px] rounded-[8px]" name="description" placeholder="Description" rows="3"></textarea>
                 </div>
                 <input type="text" name="job_id" value="{{ $job->id }}" class="hidden">
                 <button type="submit"

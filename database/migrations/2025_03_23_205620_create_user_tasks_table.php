@@ -19,7 +19,6 @@ return new class extends Migration
             $table->enum('status', ['pending', 'completed', 'approved', 'rejected'])->default('pending');
             $table->timestamp('completed_at')->nullable();
             $table->string('file_path')->nullable();
-            $table->softDeletes();
             $table->timestamps();
         });
     }
